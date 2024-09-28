@@ -3,11 +3,12 @@ from typing import Union
 
 from app.endpoints import health_endpoints
 from app.errors import bp as errors_bp
-from app.extensions import cors
+from app.extensions import cors, datastore
 
 
 def create_app(config_obj: Union[str, object] = "app.config") -> Flask:
     app = Flask(__name__)
+    app.config.from_object(config_obj)
 
     # Register blueprints
     app.register_blueprint(errors_bp)
@@ -15,5 +16,6 @@ def create_app(config_obj: Union[str, object] = "app.config") -> Flask:
 
     # Initialize extensions
     cors.init_app(app)
+    datastore.init_app(app, app.config["DATASTORE_URI"])
 
     return app
